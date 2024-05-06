@@ -34,4 +34,39 @@ endgroup
 11. ignore_bins excludes the value bins or transition bins from the covergroup after the distribution is done. Thus the bins created will still be there but they wont be hit. they will be ignored.
     It does not remove the bins from the report
 12. illegal_bins will trigger a runtime error if those bins are hit. If the value or state illegal bins represent are part of the ignore bin then we wont see a runtim error if they are hit.
+13. Cross can have coverage bins of the same covergroup. Cross trying to use coverage bins from other covergroup will result in compile error
+14. covergroup ct;
+      coverpoint i {bins i[] = {[0:1]}; }
+      coverpoint j {bins j[] = {[0:1]}; }
+      X1: cross i,j;
+      X2: cross i,j {bins i_zero = binsof(i) intersect {0};}
+      X3: cross i,j {bins i_range= binsof(i) intersect {[0,1]};}
+15. CrossValType
+16. CrossQueueType
+17. These Cross*Type are accessible from the cross itself only. They are not visible to the scope outside the cross.
+18. the "matches" keyword used represents the tuple values covered by the cross
+19. covergroup cg (int cg_lim);
+      coverpoint a; coverpoint b;
+      aXb: cross a,b {
+             function CrossQueueType myfunc1(int f_lim);
+               statements ....
+             enfunction
+             bins bin [] = myfunc1(cg_lim);
+             bins bin [] = myfunc2(cg_lim);
+             function CrossQueueType myfunc2(int f_lim);
+               statements ....
+             endfunction
+    endgroup
+20. coverage options:
+    name
+    comment
+    weight
+    auto_bin_max
+    per_instance
+    goal
+    at_lest
+    cross_num_print_missing
+    detect_overlap
+    get_inst_coverage
+    endgroup
   
