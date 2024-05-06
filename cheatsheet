@@ -1,0 +1,37 @@
+Coverage:
+
+1. covergroup <name> <(formal arguments)> <with sample function ()> OR <@(posedge clk) | @event>
+
+endgroup
+
+2. cg = new();
+
+3. covegroup cg;
+  A: coverpoint a;  // This will create separate bin for each value of a;
+endgroup
+
+4. local and protected data members can be part of the embedded covergroup
+5. cg.cp.option.weight 
+6. coverage::cp::type_option.weight
+7. default bins do not contribute to the coverage statistics. you can have "default" bins and "default sequence" bins. The "default sequence" bins cannot have multiple "[]" bins construct.
+8. coverpoint a { bins bin= {[]}};
+   coverpoint a { bins bin = {}};
+   coverpoint a { bins bin[] = {}};
+   coverpoint a { bins bin[4] = {}};
+   coverpoint a iff () { bins bin = {}};
+   coverpoint a { bins bin[] = {0:255} with ((item & (item+1)) == 0)};
+   coverpoint a { bins bin [] = (1,8) => (2,6);
+                  bins bin [] = (4=>5=>6), ([7:9],10=>11,12);
+                  bins bin [] = (12=>3[->1]);
+                  bins bin [] = (2 [-> 3:5]);
+                  bins bin [] = (5 [* 3]);
+                  bins bin [] = (1=>2[-> 4:6]=>3);}
+
+9. automatically created bins are the minimum of 2^M-1 and auto_bin_max
+10. coverpoint a {wildcard bins [] = {4'b11??}; }
+    coverpoint a {wildcard bins [] = (4'b10?? => 4'b10??); }
+    coverpoint a {wildcard bins [] = (4'01xx => 4'b01xx); }
+11. ignore_bins excludes the value bins or transition bins from the covergroup after the distribution is done. Thus the bins created will still be there but they wont be hit. they will be ignored.
+    It does not remove the bins from the report
+12. illegal_bins will trigger a runtime error if those bins are hit. If the value or state illegal bins represent are part of the ignore bin then we wont see a runtim error if they are hit.
+  
